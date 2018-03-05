@@ -1,16 +1,15 @@
 library(shiny)
 
-source("CleanMeteoriteData.R")
-
 ui <- fluidPage(
   
-  titlePanel(""),
+  titlePanel("Exploring Meteorite Data"),
   tabsetPanel(type = "tabs",
               tabPanel("Q1"),
               tabPanel("Q2"),
-              tabPanel("Relation between meteorite data and population density", plotOutput("map", click = "plot_click"),
-                       textOutput("info")),
-              tabPanel("Q4")
+              tabPanel("Q3"),
+              tabPanel("Resources for Recording Meteorites", 
+                       p(strong("Question 4:")), textOutput("q4"), 
+                       tableOutput("ratio.table"))
   )
   
 )
