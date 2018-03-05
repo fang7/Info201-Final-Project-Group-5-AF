@@ -4,9 +4,10 @@ library(dplyr)
 library(maps)
 
 source('spatial_utils.R')
+source("CleanMeteoriteData.R")
 
-complete.meteorite.data <- read.csv("data/meteorite-landings.csv", 
-                                    stringsAsFactors = FALSE)
+meteorite.data <- CleanMeteoriteData()
+
 population.density <- read.csv("data/world_population.csv", 
                                stringsAsFactors = FALSE)
 colnames(population.density) <- c('Country', '1755','1760','1765','1770','1775','1780','1785','1790','1795','1800','1805','1810','1815','1820','1825',
@@ -17,23 +18,9 @@ colnames(population.density) <- c('Country', '1755','1760','1765','1770','1775',
 
 server <- function(input, output) {
   
-  d<- reactive({
-    meteorite.data <- complete.meteorite.data %>%
-      filter(year >= 860 & year <= 2016) %>% 
-      # filter out weird years 
-      filter(reclong <= 180 & reclong >= -180 & (reclat != 0 | reclong != 0)) %>%
-      # filter out weird locations
-      filter(mass != 0.00)
-    # filter out unknown masses
-    return(meteorite.data)
-  })
-  
-  
-
-  
   output$map <- renderPlot({
     
-    check.meteorite.data <- mutate(d(), Country = GetCountryAtPoint(reclat, reclong))
+    check.meteorite.data <- mutate(meteorite.data, Country = GetCountryAtPoint(reclat, reclong))
     small_join <- left_join(check.meteorite.data, population.density, by = c("Country" = "Country"))
     
     #meteorite.country <- mutate(d(), Country = GetCountryAtPoint(reclat, reclong))
