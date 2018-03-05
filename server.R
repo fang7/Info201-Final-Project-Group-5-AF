@@ -8,6 +8,8 @@ source("Question4Data.R")
 
 meteorite.data <- CleanMeteoriteData()
 
+q4.data <- RatioByYearData()
+
 server <- function(input, output) {
 
   output$q4 <- renderText({
@@ -17,7 +19,7 @@ server <- function(input, output) {
   })
   
   output$ratio.table <- renderTable({
-    
+    return(q4.data)
   })  
   
 }
