@@ -2,6 +2,7 @@ library(shiny)
 library(ggplot2)
 library(dplyr)
 library(maps)
+library(leaflet)
 
 source('spatial_utils.R')
 source("CleanMeteoriteData.R")
@@ -20,19 +21,21 @@ server <- function(input, output) {
   
   output$map <- renderPlot({
     
-    check.meteorite.data <- mutate(meteorite.data, Country = GetCountryAtPoint(reclat, reclong))
-    small_join <- left_join(check.meteorite.data, population.density, by = c("Country" = "Country"))
+    #check.meteorite.data <- mutate(meteorite.data, Country = GetCountryAtPoint(reclat, reclong))
+    #small_join <- left_join(check.meteorite.data, population.density, by = c("Country" = "Country"))
     
     #meteorite.country <- mutate(d(), Country = GetCountryAtPoint(reclat, reclong))
     
     #breaks <- c()
     
-    p <- ggplot(data = check.meteorite.data) +
-      geom_polygon(aes(x = reclat, y = reclong, group = group), #, fill = 
+   # p <- ggplot(data = check.meteorite.data) +
+    #  geom_polygon(aes(x = reclat, y = reclong, group = group), #, fill = 
                          #cut(d(), breaks = breaks, labels = label)), 
-                   color = "black") + 
-      scale_color_brewer(palette = 'Greys') +
-      coord_quickmap() 
+    #               color = "black") + 
+    #  scale_color_brewer(palette = 'Greys') +
+    #  coord_quickmap() 
+    p <- ggplot(data = meteorite.data, mapping = aes(x = reclong, y = reclat)) +
+      geom_point()
     
     return(p)
   

@@ -28,14 +28,15 @@ meteorite.data <- complete.meteorite.data %>%
   filter(mass != 0.00)
 
 #
-check.meteorite.data <- mutate(meteorite.data, Country = GetCountryAtPoint(reclat, reclong))
-small_join <- left_join(check.meteorite.data, population.density, by = c("Country" = "Country"))
 
-countries <- map_data("world")
+#check.meteorite.data <- mutate(meteorite.data, Country = GetCountryAtPoint(reclat, reclong))
+#small_join <- left_join(check.meteorite.data, population.density, by = c("Country" = "Country"))
+
+#countries <- map_data("world")
 
 
-check.country.join <- left_join(countries, check.meteorite.data, by = c("region" = "Country"))
-big_join <- left_join(check.country.join, population.density, by = c("region" = "Country"))
+#check.country.join <- left_join(countries, check.meteorite.data, by = c("region" = "Country"))
+#big_join <- left_join(check.country.join, population.density, by = c("region" = "Country"))
 
 
 
