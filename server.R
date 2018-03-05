@@ -18,8 +18,14 @@ server <- function(input, output) {
     compared to the amount found on the ground increased over time?"
   })
   
-  output$ratio.table <- renderTable({
+  output$q4.table <- renderTable({
     return(q4.data)
   })  
   
+  output$q4.plot <- renderPlot({
+    p <- ggplot(q4.data) +
+      geom_point(aes(x = year, y = percentage.fell)) +
+      labs(title = "Percentage of Meteorites Seen Falling Over Time")
+    return(p)
+  })
 }
