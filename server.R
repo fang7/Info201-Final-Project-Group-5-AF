@@ -105,4 +105,14 @@ server <- function(input, output) {
            falling over time seems to remain somewhat constant, but the results
            were quite random and not significant.")
   })
+  
+  output$implications <- renderText({
+    "You should be interested in these results for two reasons. One, they show 
+    that meteorites observed falling are basically observed at random. Two, 
+    they show that there have been no improvements in technology used to 
+    observe meteorites as they're falling. If you want to work for NASA or 
+    a related company, or you just are interested in meteorites, you could 
+    design technology that would detect or predict meteorites and it will  
+    almost certainly be an improvement."
+  })
 }

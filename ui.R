@@ -12,7 +12,8 @@ ui <- fluidPage(
                        tableOutput("q4.table"), plotOutput("q4.plot"),
                        textOutput("fit.description"), plotOutput("new.plot"),
                        textOutput("new.description"), p(strong("Conclusion:")),
-                       textOutput("conclusion"))
+                       textOutput("conclusion"), p(strong("Implications:")),
+                       textOutput("implications"))
   )
   
 )
