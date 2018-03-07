@@ -1,5 +1,9 @@
 library(shiny)
 library(ggplot2)
+library(rsconnect)
+
+source("ui.R")
+  # Gets the ui script for the web app
 
 source("Question4Data.R")
   # Gets the functions for question 4 from this script
@@ -170,3 +174,6 @@ server <- function(input, output) {
     almost certainly be an improvement."
   })
 }
+
+shinyApp(ui, server)
+  # Creates the web app with the ui and server
