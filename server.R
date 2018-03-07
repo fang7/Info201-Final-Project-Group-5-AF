@@ -1,12 +1,7 @@
 library(shiny)
 library(ggplot2)
-library(dplyr)
-library(maps)
 
-source("CleanMeteoriteData.R")
 source("Question4Data.R")
-
-meteorite.data <- CleanMeteoriteData()
 
 q4.data <- RatioByYearData()
 
@@ -88,6 +83,26 @@ server <- function(input, output) {
   })
   
   output$conclusion <- renderText({
-    
+    paste0("The linear fit regression line originally had a slope of ", 
+           round(summary(linear.fit)$coefficients[2,1], 2), " and a correlation
+           coefficient of ", 
+           round(cor(q4.data$year, q4.data$percentage.fell), 2), ". This 
+           wouldn't really make sense as the percentage of meteorites seen 
+           falling shouldn't be decreasing over time as technology improves 
+           unless NASA and/or observatories lost funding. Therefore, I decided 
+           to remove outliers and fit another linear regression line. This new 
+           regression line had a slope of ", 
+           round(summary(new.linear.fit)$coefficients[2,1], 3), "with an 
+           associated p-value of ", 
+           round(summary(new.linear.fit)$coefficients[2,4], 2), " and a 
+           correlation coefficient of ", 
+           round(cor(q4.new.data$year, q4.new.data$percentage.fell), 2), " . 
+           This slope seems more likely as it is very close to zero so that 
+           would mean that the percentage of meteorites seen falling has 
+           remained constant over time. Unfortunately, the p-value is too large
+           and the correlation coefficient is too low to deem this result 
+           significant. In conclusion, the percentage of meteorites seen 
+           falling over time seems to remain somewhat constant, but the results
+           were quite random and not significant.")
   })
 }
