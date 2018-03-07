@@ -1,6 +1,5 @@
 library(shiny)
 library(ggplot2)
-  # Loads the shiny and ggplot2 libraries
 
 source("Question4Data.R")
   # Gets the functions for question 4 from this script
