@@ -28,8 +28,25 @@ server <- function(input, output) {
     p <- ggplot(q4.data, mapping = aes(x = year, y = percentage.fell)) +
       geom_point() +
       geom_smooth(method = "lm", se = FALSE) +
-      geom_text(x = 2007, y = 7, label = paste("r =", round(cor(q4.data$year, q4.data$percentage.fell), 2)))
+      geom_text(x = 2007, y = 7, 
+                label = paste("r =", 
+                              round(cor(q4.data$year, q4.data$percentage.fell),
+                                    2)))
       labs(title = "Percentage of Meteorites Seen Falling Over Time")
     return(p)
+  })
+      
+  output$fit.description <- renderText({
+    paste0("The linear fit has a slope of ", 
+          round(summary(linear.fit)$coefficients[2,1], 2), " and an associated 
+          p-value of ", round(summary(linear.fit)$coefficients[2,4], 2), ". The
+           correlation coefficient is r = ", 
+          round(cor(q4.data$year, q4.data$percentage.fell), 2), ". Both values 
+          are negative which means that the number of meteorites seen falling 
+          is actually trending downward. The p-value is not significant and 
+          the correlation coefficient is quite low so therefore the 
+          downward trend doesn't seem significant. This could be because of 
+          the outlier data of 20% during the year 1976. Let's see what happens 
+          when we remove that outlier.")
   })
 }
