@@ -10,17 +10,19 @@ library(RColorBrewer)
 source('spatial_utils.R')
 source("CleanMeteoriteData.R")
 
-#source("ui.R")
-  # Gets the ui script for the web app
-
+# Gets the functions for question 4 from this script
 source("Question4Data.R")
-  # Gets the functions for question 4 from this script
-
+  
+# loads the data from the CleanMeteoriteData script
 meteorite.data <- CleanMeteoriteData()
 
+# reads in the data contanining information about population density
 population.density <- read.csv("data/world_population.csv", 
                                stringsAsFactors = FALSE)
+# selects the columns with data 1974 - 2016
 temp.pd <- population.density[, 1:44]
+
+# sets the column names to a more usable format
 colnames(temp.pd) <- c('Country', 'yr1974','yr1975','yr1976','yr1977','yr1978',
                        'yr1979','yr1980','yr1981','yr1982','yr1983','yr1984',
                        'yr1985','yr1986','yr1987','yr1988','yr1989','yr1990',
@@ -30,14 +32,14 @@ colnames(temp.pd) <- c('Country', 'yr1974','yr1975','yr1976','yr1977','yr1978',
                        'yr2009','yr2010','yr2011','yr2012','yr2013','yr2014',
                        'yr2015','yr2016')
 
+# loads in the data about the countries geographic locatios and merges them 
+# with the data set containing info about population density.
 countries <- map_data("world")
 both_data <- left_join(countries, temp.pd, by = c("region" = "Country"))
 
-
-
-
+# Gets the data for question 4
 q4.data <- RatioByYearData()
-  # Gets the data for question 4
+  
 
 server <- function(input, output) {
 
@@ -207,35 +209,48 @@ server <- function(input, output) {
     breaks <- c(0.00, 10.00, 20.00, 30.00, 40.00, 50.00, Inf)
     meteorite.data <- filter(meteorite.data, year == input$n)
     
-    fill=guide_legend(title="Impact Zone Frequency Levels")
-    
+    # makes a map that shows the population density distibution for the 
+    # selected year and also diplays the meteorites that fell at different
+    # parts of the world in that year.
     p <- ggplot() + 
-      geom_polygon(data = both_data, aes(x = long, y = lat, group = group, fill = cut(both_data[[paste0('yr', input$n)]], breaks = breaks)),   #both_data[[paste0('yr', input$n)]]),
+      geom_polygon(data = both_data, 
+                   aes(x = long, y = lat, group = group, 
+                       fill = cut(both_data[[paste0('yr', input$n)]], 
+                                  breaks = breaks)),
                    color = "black") + 
       scale_fill_brewer(palette = "Green") +
       coord_quickmap() + 
-      geom_point(data = meteorite.data, mapping = aes(x = reclong, y = reclat), color="red") +
-      guides(fill=guide_legend(title="Population density in residents per square mile"))
-    
+      geom_point(data = meteorite.data, mapping = aes(x = reclong, y = reclat),
+                 color="red") +
+      guides(fill=guide_legend(title = "Population density in residents per 
+                               square mile"))
     return(p)
-    
   })
   
+  # prints out information depending upon the place on the map clicked by the 
+  # user
   output$info3 <- renderText({
-    choosen <- filter(both_data, region == GetCountryAtPoint(input$plot_click$x, input$plot_click$y)) %>%
+    choosen <- filter(both_data, region == 
+                        GetCountryAtPoint(input$plot_click$x, 
+                                          input$plot_click$y)) %>%
       select(region, paste0('yr', input$n))
-    paste0("Click map to display information:","\nLatitude = ", input$plot_click$x, "\nLongitude = ", input$plot_click$y
-          , "\nCountry = ", GetCountryAtPoint(input$plot_click$x, input$plot_click$y), "\nPopulation = ", choosen[3, 2],
-          " residents per square mile ")
+    
+    # prints out data depending on the region of map clicked by the user.
+    paste0("Click map to display information:","\nLatitude = ", 
+           input$plot_click$x, "\nLongitude = ", input$plot_click$y
+          , "\nCountry = ", GetCountryAtPoint(input$plot_click$x, 
+                                              input$plot_click$y), 
+          "\nPopulation = ", choosen[3, 2], " residents per square mile ")
   })
   
+  # prints an introduction to the map used in the third analysis question
   output$intro3 <- renderText({
-    paste0("This map represents the population density distribution across the world over different years. The red dots represent
-           locations at which meteorite falls have been recorded in the respective years. The map can be clicked for further 
-           information about the location and its population density.")
+    paste0("This map represents the population density distribution across the
+            world over different years. The red dots represent locations at 
+            which meteorite falls have been recorded in the respective years.
+            The map can be clicked for further information about the location 
+            and its population density.")
   })
 }
 shinyServer(server)
-#shinyApp(ui, server)
-# Creates the web app with the ui and server
 

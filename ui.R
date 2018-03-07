@@ -13,8 +13,12 @@ ui <- fluidPage(
   tabsetPanel(type = "tabs",
               tabPanel("Q1"),
               tabPanel("Q2"),
-              # The tab panel for question 3. 
-              tabPanel("Relation between meteorite data and population density", br(), p(textOutput("intro3")),
+              # The tab panel for question 3. Includes an interactive map, 
+              # an introduction to the map, an information display that 
+              # displays data accordingto user's click, and an interactive 
+              # slider
+              tabPanel("Relation between meteorite data and population density"
+                       , br(), p(textOutput("intro3")),
                        plotOutput("map3", click = "plot_click"),
                        verbatimTextOutput("info3"), sliderInput("n",
                                                        "Choose a year:",
