@@ -13,9 +13,36 @@ server <- function(input, output) {
     compared to the amount found on the ground increased over time?"
   })
   
+  output$table.description <- renderText({
+    "This table displays the number of meteorites found, the number of 
+    meteorites seen falling, and the percentage of meteorites seen falling for 
+    the user-selected years. This table also displays the averages for all of 
+    these values over the selected time period as the last row in the table."
+  })
+  
+  filtered.years <- reactive({q4.data %>%
+                                filter(year >= input$year.choice[1] &
+                                       year <= input$year.choice[2])
+  })
+  
+  mean.found <- reactive({round(mean(filtered.years()$found), 2)})
+  mean.fell <- reactive({round(mean(filtered.years()$fell), 2)})
+  mean.percentage <- 
+    reactive({round(100 * mean.fell() / (mean.fell() + mean.found()), 2)})
+  
+  filtered.data <- 
+    reactive({rbind(filtered.years(), c("Averages", mean.found(), mean.fell(),
+                                        mean.percentage()))})
+  
   output$q4.table <- renderTable({
-    return(q4.data)
+    return(filtered.data())
   })  
+  
+  output$fit.intro <- renderText({
+    "Here we are going to fit a linear regression line for the relationship 
+    between the year and the percentage of meteorites seen falling. We will 
+    use every year in the data set (1974-2011) for this analysis."
+  })
   
   linear.fit <- lm(q4.data$percentage.fell ~ q4.data$year)
   
@@ -46,7 +73,8 @@ server <- function(input, output) {
           the correlation coefficient is quite low so therefore the 
           downward trend doesn't seem significant. This could be because of 
           the outlier data of 20% during the year 1976. Let's see what happens 
-          when we remove any outliers with residuals greater than 10.")
+          when we remove any outliers by getting rid of years with residuals 
+          greater than 10.")
   })
     
   q4.new.data <- q4.data[-which(abs(linear.fit$residuals) > 10), ]
@@ -76,10 +104,11 @@ server <- function(input, output) {
            round(summary(new.linear.fit)$coefficients[2,4], 2), ". The 
            correlation coefficient is r = ", 
            round(cor(q4.new.data$year, q4.new.data$percentage.fell), 2), ". 
-           Both of these values still indicate a downward trend but it is much 
-           closer to zero. These results are not significant as the p-value is 
-           much larger than 0.05 and the correlation coefficient is extremely 
-           low.") 
+           Both of these values still indicate a extremely small downward trend 
+           but it is much closer to zero. This would mean that there is no 
+           change in percentage of meteorites seen falling over time. These 
+           results are not significant as the p-value is much larger than 0.05 
+           and the correlation coefficient is extremely low.") 
   })
   
   output$conclusion <- renderText({

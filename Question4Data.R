@@ -19,7 +19,7 @@ RatioByYearData <- function() {
   RatioByYear[32, "fell"] <- 0
   
   RatioByYear$percentage.fell <- 
-    100 * RatioByYear$fell / (RatioByYear$found + RatioByYear$fell)
+    round(100 * RatioByYear$fell / (RatioByYear$found + RatioByYear$fell), 2)
   
   return(RatioByYear)
 }
