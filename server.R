@@ -32,6 +32,10 @@ server <- function(input, output) {
                 label = paste("r =", 
                               round(cor(q4.data$year, q4.data$percentage.fell),
                                     2))) +
+      geom_text(x = 2007, y = 8, 
+                label = paste("slope =", 
+                              round(summary(linear.fit)$coefficients[2,1], 
+                                    2))) +
       labs(title = "Percentage of Meteorites Seen Falling Over Time")
     return(p)
   })
@@ -50,9 +54,9 @@ server <- function(input, output) {
           when we remove any outliers with residuals greater than 10.")
   })
     
-    q4.new.data <- q4.data[-which(abs(linear.fit$residuals) > 10), ]
+  q4.new.data <- q4.data[-which(abs(linear.fit$residuals) > 10), ]
     
-    new.linear.fit <- lm(q4.new.data$percentage.fell ~ q4.new.data$year)
+  new.linear.fit <- lm(q4.new.data$percentage.fell ~ q4.new.data$year)
     
   output$new.plot <- renderPlot({
       p2 <- ggplot(q4.new.data, mapping = aes(x = year, y = percentage.fell)) +
@@ -62,7 +66,28 @@ server <- function(input, output) {
                   label = paste("r =", 
                                 round(cor(q4.new.data$year, 
                                           q4.new.data$percentage.fell), 2))) +
+         geom_text(x = 2010, y = 2.2, 
+                   label = paste("slope =", 
+                               round(summary(new.linear.fit)$coefficients[2,1],
+                                     3))) +
          labs(title = "Percentage of Meteorites Seen Falling Over Time")
       return(p2)
+  })
+  
+  output$new.description <- renderText({
+    paste0("After removing outliers, the new slope of the linear regression 
+           line is ", round(summary(new.linear.fit)$coefficients[2,1], 3), 
+           " with an associated p-value of ", 
+           round(summary(new.linear.fit)$coefficients[2,4], 2), ". The 
+           correlation coefficient is r = ", 
+           round(cor(q4.new.data$year, q4.new.data$percentage.fell), 2), ". 
+           Both of these values still indicate a downward trend but it is much 
+           closer to zero. These results are not significant as the p-value is 
+           much larger than 0.05 and the correlation coefficient is extremely 
+           low.") 
+  })
+  
+  output$conclusion <- renderText({
+    
   })
 }
