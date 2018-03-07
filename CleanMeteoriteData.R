@@ -11,8 +11,10 @@ CleanMeteoriteData <- function() {
                            # Reads the data downloaded from Kaggle
   
   meteorite.data <- complete.meteorite.data %>%
-    filter(year >= 1974 & year <= 2011) %>% 
+    #filter(year >= 1974 & year <= 2011) %>% 
            # filter out weird years and years with small number of observations
+    filter(year >= 1974 & year <= 2016) %>% 
+                # filter out weird years and years with small number of observations
     filter(reclong <= 180 & reclong >= -180 & (reclat != 0 | reclong != 0)) %>%
            # filter out weird locations
     filter(mass != 0.00)
