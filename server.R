@@ -4,6 +4,7 @@ library(dplyr)
 library(maps)
 library(leaflet)
 library(magrittr)
+library(RColorBrewer)
 
 source('spatial_utils.R')
 source("CleanMeteoriteData.R")
@@ -13,47 +14,52 @@ meteorite.data <- CleanMeteoriteData()
 population.density <- read.csv("data/world_population.csv", 
                                stringsAsFactors = FALSE)
 temp.pd <- population.density[, 1:44]
-colnames(temp.pd) <- c('Country', '1974','1975','1976','1977','1978','1979','1980','1981','1982','1983','1984','1985','1986','1987','1988',
-                       '1989','1990','1991','1992','1993','1994','1995','1996','1997','1998','1999','2000','2001','2002','2003','2004',
-                       '2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015','2016')
+colnames(temp.pd) <- c('Country', 'yr1974','yr1975','yr1976','yr1977','yr1978',
+                       'yr1979','yr1980','yr1981','yr1982','yr1983','yr1984',
+                       'yr1985','yr1986','yr1987','yr1988','yr1989','yr1990',
+                       'yr1991','yr1992','yr1993','yr1994','yr1995','yr1996',
+                       'yr1997','yr1998','yr1999','yr2000','yr2001','yr2002',
+                       'yr2003','yr2004','yr2005','yr2006','yr2007','yr2008',
+                       'yr2009','yr2010','yr2011','yr2012','yr2013','yr2014',
+                       'yr2015','yr2016')
 
+countries <- map_data("world")
+both_data <- left_join(countries, temp.pd, by = c("region" = "Country"))
 
 
 server <- function(input, output) {
   
-  output$map <- renderPlot({
+  output$map3 <- renderPlot({
     
-    g <- ggplot(data = meteorite.data, mapping = aes(x = reclong, y = reclat)) +
-      geom_point()
-    
-    countries <- map_data("world")
-    both_data <- left_join(countries, temp.pd, by = c("region" = "Country"))
-    
-    breaks <- c(0.00, 5.00, 10.00, 15.00, 20.00, 25.00, Inf)
-    
+    breaks <- c(0.00, 10.00, 20.00, 30.00, 40.00, 50.00, Inf)
     meteorite.data <- filter(meteorite.data, year == input$n)
     
+    fill=guide_legend(title="Impact Zone Frequency Levels")
+    
     p <- ggplot() + 
-      geom_polygon(data = both_data, aes(x = long, y = lat, group = group, fill = cut(input$n, breaks = breaks)),
+      geom_polygon(data = both_data, aes(x = long, y = lat, group = group, fill = cut(both_data[[paste0('yr', input$n)]], breaks = breaks)),   #both_data[[paste0('yr', input$n)]]),
                    color = "black") + 
-      scale_color_brewer(palette = 'Greys') +
+      scale_fill_brewer(palette = "Green") +
       coord_quickmap() + 
-      geom_point(data = meteorite.data, mapping = aes(x = reclong, y = reclat), color="red")
+      geom_point(data = meteorite.data, mapping = aes(x = reclong, y = reclat), color="red") +
+      guides(fill=guide_legend(title="Population density in residents per square mile"))
     
     return(p)
     
   })
   
-  output$info <- renderText({
-    #which.col <- input$n
-    countries <- map_data("world")
-    both_data <- left_join(countries, temp.pd, by = c("region" = "Country"))
-    choose <- filter(both_data, region == GetCountryAtPoint(input$plot_click$x, input$plot_click$y))# %>%
-    #  select(region, !!(which.col))
-    paste("Latitude = ", input$plot_click$x, "Longitude = ", input$plot_click$y
-          , "Country = ", GetCountryAtPoint(input$plot_click$x, input$plot_click$y), "Population = ", choose[3, 7])
-    #paste(choose[3, 2])
+  output$info3 <- renderText({
+    choosen <- filter(both_data, region == GetCountryAtPoint(input$plot_click$x, input$plot_click$y)) %>%
+      select(region, paste0('yr', input$n))
+    paste0("Click map to display information:","\nLatitude = ", input$plot_click$x, "\nLongitude = ", input$plot_click$y
+          , "\nCountry = ", GetCountryAtPoint(input$plot_click$x, input$plot_click$y), "\nPopulation = ", choosen[3, 2],
+          " residents per square mile ")
   })
   
-  
+  output$intro3 <- renderText({
+    paste0("This map represents the population density distribution across the world over different years. The red dots represent
+           locations at which meteorite falls have been recorded in the respective years. The map can be clicked for further 
+           information about the location and its population density.")
+  })
 }
+shinyServer(server)

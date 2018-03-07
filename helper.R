@@ -16,11 +16,11 @@ complete.meteorite.data <- read.csv("data/meteorite-landings.csv",
 population.density <- read.csv("data/world_population.csv", 
                                stringsAsFactors = FALSE)
 temp.pd <- population.density[, 1:44]
-colnames(temp.pd) <- c('Country', '1974','1975','1976','1977','1978','1979','1980','1981','1982','1983','1984','1985','1986','1987','1988',
-                                  '1989','1990','1991','1992','1993','1994','1995','1996','1997','1998','1999','2000','2001','2002','2003','2004',
-                                  '2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015','2016')
+colnames(temp.pd) <- c('Country', 'yr1974','yr1975','yr1976','yr1977','yr1978','yr1979','yr1980','yr1981','yr1982','yr1983','yr1984','yr1985','yr1986','yr1987','yr1988',
+                                  'yr1989','yr1990','yr1991','yr1992','yr1993','yr1994','yr1995','yr1996','yr1997','yr1998','yr1999','yr2000','yr2001','yr2002','yr2003','yr2004',
+                                  'yr2005','yr2006','yr2007','yr2008','yr2009','yr2010','yr2011','yr2012','yr2013','yr2014','yr2015','yr2016')
 
-
+#colnames(temp.pd) <- paste0('yr',colnames(temp.pd))
 
 countries <- map_data("world")
 #relevant <- select(temp.pd, 'Country', '1995') %>%
