@@ -31,7 +31,7 @@ server <- function(input, output) {
       geom_text(x = 2007, y = 7, 
                 label = paste("r =", 
                               round(cor(q4.data$year, q4.data$percentage.fell),
-                                    2)))
+                                    2))) +
       labs(title = "Percentage of Meteorites Seen Falling Over Time")
     return(p)
   })
@@ -47,6 +47,22 @@ server <- function(input, output) {
           the correlation coefficient is quite low so therefore the 
           downward trend doesn't seem significant. This could be because of 
           the outlier data of 20% during the year 1976. Let's see what happens 
-          when we remove that outlier.")
+          when we remove any outliers with residuals greater than 10.")
+  })
+    
+    q4.new.data <- q4.data[-which(abs(linear.fit$residuals) > 10), ]
+    
+    new.linear.fit <- lm(q4.new.data$percentage.fell ~ q4.new.data$year)
+    
+  output$new.plot <- renderPlot({
+      p2 <- ggplot(q4.new.data, mapping = aes(x = year, y = percentage.fell)) +
+         geom_point() +
+         geom_smooth(method = "lm", se = FALSE) +
+         geom_text(x = 2010, y = 2, 
+                  label = paste("r =", 
+                                round(cor(q4.new.data$year, 
+                                          q4.new.data$percentage.fell), 2))) +
+         labs(title = "Percentage of Meteorites Seen Falling Over Time")
+      return(p2)
   })
 }

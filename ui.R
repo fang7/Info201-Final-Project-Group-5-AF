@@ -10,7 +10,7 @@ ui <- fluidPage(
               tabPanel("Resources for Recording Meteorites", 
                        p(strong("Question 4:")), textOutput("q4"), 
                        tableOutput("q4.table"), plotOutput("q4.plot"),
-                       textOutput("fit.description"))
+                       textOutput("fit.description"), plotOutput("new.plot"))
   )
   
 )
