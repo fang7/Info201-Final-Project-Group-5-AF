@@ -1,18 +1,23 @@
 library(shiny)
 library(ggplot2)
+  # Loads the shiny and ggplot2 libraries
 
 source("Question4Data.R")
+  # Gets the functions for question 4 from this script
 
 q4.data <- RatioByYearData()
+  # Gets the data for question 4
 
 server <- function(input, output) {
 
+  # Question 4 in text
   output$q4 <- renderText({
     "How has the amount of technology and/or resources helped observe 
     meteorite landngs over time? Has the amount of meteorites seen falling
     compared to the amount found on the ground increased over time?"
   })
   
+  # A text description of the details of the table
   output$table.description <- renderText({
     "This table displays the number of meteorites found, the number of 
     meteorites seen falling, and the percentage of meteorites seen falling for 
@@ -20,32 +25,43 @@ server <- function(input, output) {
     these values over the selected time period as the last row in the table."
   })
   
+  # Filters the data to only include the time period the user selects
   filtered.years <- reactive({q4.data %>%
                                 filter(year >= input$year.choice[1] &
                                        year <= input$year.choice[2])
   })
   
+  # Gets the mean of the number of meteorites found, the number of meteorites 
+  # seen falling, and the percentage of meteorites seen falling for the
+  # selected time period
   mean.found <- reactive({round(mean(filtered.years()$found), 2)})
   mean.fell <- reactive({round(mean(filtered.years()$fell), 2)})
   mean.percentage <- 
     reactive({round(100 * mean.fell() / (mean.fell() + mean.found()), 2)})
   
+  # Adds the averages to the bottom of the table
   filtered.data <- 
     reactive({rbind(filtered.years(), c("Averages", mean.found(), mean.fell(),
                                         mean.percentage()))})
   
+  # The data for question for as a table
   output$q4.table <- renderTable({
     return(filtered.data())
   })  
   
+  # An introduction to what linear regression will be done
   output$fit.intro <- renderText({
     "Here we are going to fit a linear regression line for the relationship 
     between the year and the percentage of meteorites seen falling. We will 
     use every year in the data set (1974-2011) for this analysis."
   })
   
+  # The linear fit for the percentage of meteorites seen falling vs the year
   linear.fit <- lm(q4.data$percentage.fell ~ q4.data$year)
   
+  # A plot of the percentage of meteorites seen falling vs the year with the 
+  # linear regression line fitted, the slope, and the correlation coefficient
+  # on the plot.
   output$q4.plot <- renderPlot({
     p <- ggplot(q4.data, mapping = aes(x = year, y = percentage.fell)) +
       geom_point() +
@@ -61,7 +77,8 @@ server <- function(input, output) {
       labs(title = "Percentage of Meteorites Seen Falling Over Time")
     return(p)
   })
-      
+  
+  # A text description of the linear fit    
   output$fit.description <- renderText({
     paste0("The linear fit has a slope of ", 
           round(summary(linear.fit)$coefficients[2,1], 2), " and an associated 
@@ -77,10 +94,16 @@ server <- function(input, output) {
           greater than 10.")
   })
     
+  # Removes the outliers (residuals greater than 10 was threshold)
   q4.new.data <- q4.data[-which(abs(linear.fit$residuals) > 10), ]
     
+  # The linear fit for the percentage of meteorites seen falling vs the year
+  # but without the outliers
   new.linear.fit <- lm(q4.new.data$percentage.fell ~ q4.new.data$year)
     
+  # A plot of the percentage of meteorites seen falling vs the year with the 
+  # linear regression line fitted, the slope, and the correlation coefficient
+  # on the plot but this time without the outliers.
   output$new.plot <- renderPlot({
       p2 <- ggplot(q4.new.data, mapping = aes(x = year, y = percentage.fell)) +
          geom_point() +
@@ -97,6 +120,7 @@ server <- function(input, output) {
       return(p2)
   })
   
+  # A text description of the linear fit without the outliers
   output$new.description <- renderText({
     paste0("After removing outliers, the new slope of the linear regression 
            line is ", round(summary(new.linear.fit)$coefficients[2,1], 3), 
@@ -111,6 +135,7 @@ server <- function(input, output) {
            and the correlation coefficient is extremely low.") 
   })
   
+  # A conclusion of the results of the analysis
   output$conclusion <- renderText({
     paste0("The linear fit regression line originally had a slope of ", 
            round(summary(linear.fit)$coefficients[2,1], 2), " and a correlation
@@ -135,6 +160,7 @@ server <- function(input, output) {
            were quite random and not significant.")
   })
   
+  # The implications of the results of this analysis
   output$implications <- renderText({
     "You should be interested in these results for two reasons. One, they show 
     that meteorites observed falling are basically observed at random. Two, 

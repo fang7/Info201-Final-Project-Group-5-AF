@@ -1,14 +1,24 @@
 library(shiny)
+  # Loads the shiny library
 
 range.year <- range(1974, 2011)
+  # The range of the years of this data set
 
 ui <- fluidPage(
   
+  # The title of our web app
   titlePanel("Exploring Meteorite Data"),
+  
+  # What goes in our tabsets
   tabsetPanel(type = "tabs",
               tabPanel("Q1"),
               tabPanel("Q2"),
               tabPanel("Q3"),
+              
+              # The tab panel for question 4. Includes the question, an 
+              # interactive table, two linear regression plots, a conclusion
+              # paragraph,and an implications paragraph as well as descriptions
+              # for the table and plots.
               tabPanel("Resources for Observing Meteorites", 
                        p(strong("Question 4")), textOutput("q4"), p(""),
                        p(strong("Table")), textOutput("table.description"), 

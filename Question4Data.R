@@ -1,6 +1,17 @@
 library(dplyr)
-source("cleanMeteoriteData.R")
+  # Loads dplyr library
 
+source("cleanMeteoriteData.R")
+  # Gets the data from this r script
+
+# Input: Takes no input.
+# Function: Groups the meteorite data by year for meteorites that fell and 
+#           meteorites that were found. Creates a new data frame with these 
+#           counts and adds a column for the percentage of meteorites that were
+#           seen falling.
+# Output: Returns the data frame of the year, the number of meteorites seen 
+#         falling, the number of meteorites found, and the percentage of 
+#         meteorites seen falling.
 RatioByYearData <- function() {
   
   meteorite.data <- CleanMeteoriteData()
