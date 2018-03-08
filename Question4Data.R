@@ -16,6 +16,9 @@ RatioByYearData <- function() {
   
   meteorite.data <- CleanMeteoriteData()
   
+  meteorite.data <- meteorite.data %>%
+    filter(year <= 2011)
+  
   FellByYear <- meteorite.data %>%
     filter(fall == "Fell") %>%
     group_by(year) %>%
