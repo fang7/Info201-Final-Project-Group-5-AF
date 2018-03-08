@@ -18,13 +18,16 @@ ui <- fluidPage(
               # displays data accordingto user's click, and an interactive 
               # slider
               tabPanel("Relation between meteorite data and population density"
-                       , br(), p(textOutput("intro3")),
-                       plotOutput("map3", click = "plot_click"),
-                       verbatimTextOutput("info3"), sliderInput("n",
-                                                       "Choose a year:",
-                                                       value = 2000,
-                                                       min = 1974,
-                                                       max = 2016)
+                       , sidebarPanel(sliderInput("n",
+                                                  "Choose a year:",
+                                                  value = 2000,
+                                                  min = 1974,
+                                                  max = 2016)),
+                       mainPanel(
+                         br(), p(textOutput("intro3")),
+                         plotOutput("map3", click = "plot_click"),
+                         verbatimTextOutput("info3")  
+                       )
               ),
               # The tab panel for question 4. Includes the question, an 
               # interactive table, two linear regression plots, a conclusion
