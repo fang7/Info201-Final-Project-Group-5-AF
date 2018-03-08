@@ -56,6 +56,11 @@ server <- function(input, output) {
     these values over the selected time period as the last row in the table."
   })
   
+  output$slider.info <- renderText({
+    "This slider only affects the table data and the averages. The data used  
+    in the linear regression is not affected."
+  })
+  
   # Filters the data to only include the time period the user selects
   filtered.years <- reactive({q4.data %>%
                                 filter(year >= input$year.choice[1] &
@@ -177,7 +182,7 @@ server <- function(input, output) {
            unless NASA and/or observatories lost funding. Therefore, I decided 
            to remove outliers and fit another linear regression line. This new 
            regression line had a slope of ", 
-           round(summary(new.linear.fit)$coefficients[2,1], 3), "with an 
+           round(summary(new.linear.fit)$coefficients[2,1], 3), " with an 
            associated p-value of ", 
            round(summary(new.linear.fit)$coefficients[2,4], 2), " and a 
            correlation coefficient of ", 
@@ -251,5 +256,6 @@ server <- function(input, output) {
             and its population density.")
   })
 }
+
 shinyServer(server)
 
