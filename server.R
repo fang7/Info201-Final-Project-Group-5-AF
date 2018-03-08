@@ -3,8 +3,6 @@ library(ggplot2)
 library(rsconnect)
 library(dplyr)
 library(maps)
-library(leaflet)
-library(magrittr)
 library(RColorBrewer)
 
 source('spatial_utils.R')
@@ -240,7 +238,7 @@ server <- function(input, output) {
            input$plot_click$x, "\nLongitude = ", input$plot_click$y
           , "\nCountry = ", GetCountryAtPoint(input$plot_click$x, 
                                               input$plot_click$y), 
-          "\nPopulation = ", choosen[3, 2], " residents per square mile ")
+          "\nPopulation = ", round(choosen[3, 2], 2), " residents per square mile ")
   })
   
   # prints an introduction to the map used in the third analysis question
