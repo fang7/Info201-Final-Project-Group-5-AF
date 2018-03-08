@@ -1,7 +1,7 @@
 library(dplyr)
   # Loads dplyr library
 
-source("cleanMeteoriteData.R")
+source("CleanMeteoriteData.R")
   # Gets the data from this r script
 
 # Input: Takes no input.

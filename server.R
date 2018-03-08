@@ -314,7 +314,8 @@ server <- function(input, output) {
     
     plot <- ggplot(data = map.data()) +
       geom_polygon(aes(x = long, y = lat, group = group, fill = 
-                         cut(counts, breaks = c(0,1,2,5,10,Inf), labels = c("1","2-3","4-5","6-10","10+"))), 
+                         cut(counts, breaks = c(0,1,2,5,10,Inf), 
+                             labels = c("1","2-3","4-5","6-10","10+"))), 
                    color = "black") + 
       scale_fill_brewer(palette = "Reds") +
       coord_quickmap()  + 
@@ -326,7 +327,8 @@ server <- function(input, output) {
   # BARPLOT BELOW MAP
   # -----------------------------------------------------------------------
   output$q2.bar.graph <- renderPlot({
-    plot <- ggplot(data = make.three(), aes(y = counts, x = region, fill = recclass)) + 
+    plot <- ggplot(data = make.three(), aes(y = counts, x = region
+                                            , fill = recclass)) + 
       geom_bar(stat="identity") + 
       labs(x = "Country", y = "Number of Meteors")   + 
       guides(fill=guide_legend(title="Classification"))
