@@ -25,6 +25,17 @@ ui <- fluidPage(
                                                   max = 2016)),
                        mainPanel(
                          br(), p(textOutput("intro3")),
+                         p(strong("In which countries have the most number of 
+                         meteorites been found and how many people did it 
+                         affect (depending on the population density of the 
+                         country)?")),
+                         p("It was found that over the years, 
+                           a majority of meteorites were reported to be found 
+                           in North America and Afria and the population 
+                           density in these places have always been in the 
+                           middle range in comparison to other countries. Thus
+                           concluding that so far, meteorites haven't been 
+                           found a lot in highly populated countries."),
                          plotOutput("map3", click = "plot_click"),
                          verbatimTextOutput("info3")  
                        )
