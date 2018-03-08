@@ -11,7 +11,33 @@ ui <- fluidPage(
   
   # What goes in our tabsets
   tabsetPanel(type = "tabs",
-              tabPanel("Q1"),
+              tabPanel("Geographical Map", 
+                       sidebarLayout(
+                         sidebarPanel( 
+                           br(),
+                           sliderInput('chosen.year', 
+                                       label = "Pick a year:", 
+                                       min = 1974, 
+                                       max = 2016, 
+                                       value = 1995, 
+                                       sep = "")
+                         ),
+                         mainPanel(
+                                br(), 
+                                h1("Description"),
+                                textOutput("map.description"), 
+                                h1("Location and Info"), 
+                                plotOutput('plot',
+                                           click = "plot_click",
+                                           brush = brushOpts(
+                                             id = "plot_brush"
+                                           )
+                                ),
+                                verbatimTextOutput("click_info"),
+                                verbatimTextOutput("brush_info")
+                         )
+                       )
+              ),
               tabPanel("Composition vs Location",
                        sidebarLayout(
                          sidebarPanel(

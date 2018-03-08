@@ -367,6 +367,76 @@ server <- function(input, output) {
       curiosity."
   })
   
+  #-------------------------------------------------------------------------
+  # PART 1
+  #-------------------------------------------------------------------------
+  complete.meteorite.data <- read.csv("data/meteorite-landings.csv", 
+                                      stringsAsFactors = FALSE)
+  
+  # Reads the data downloaded from Kaggle
+  meta.data.q1 <- complete.meteorite.data %>%
+    filter(year >= 1974 & year <= 2016) %>% 
+    filter(reclong <= 180 & reclong >= -180 & (reclat != 0 | reclong != 0)) %>%
+    filter(mass != 0.00) %>%
+    select(-nametype) 
+  
+  # filters map with the chosen year
+  new.map.q1 <- reactive({
+    map.info.q1 <- meta.data.q1 %>%
+      filter(year == input$chosen.year)
+    return(map.info.q1)
+  })
+  
+  # grabs the world map data and returns it 
+  world.map.q1 <- reactive({
+    world.map.q1 <- map_data("world") 
+    return(world.map.q1)
+  })
+  
+  # plots red points of where the meteorites have fallen and includes a map
+  # visualization to show where in the world the meteorite has fallen
+  output$plot <- renderPlot({
+    plot <-ggplot(data = new.map.q1(), mapping = aes(x = reclong, y = reclat), 
+                  color = "red") +
+      geom_point() +
+      geom_polygon(data = world.map.q1(), mapping=aes(x=long, y=lat, group=group),
+                   color = "black") +
+      coord_quickmap() +
+      geom_point(data = new.map.q1(), mapping = aes(x = reclong, y = reclat), 
+                 color = "red")
+    return(plot)
+  })
+  
+  # filters unneccesary information from the data frame and returns it
+  filtered.map.q1 <- reactive({
+    filitered.info.q1 <- new.map.q1() %>%
+      select(-id) %>%
+      select(-year)
+    return(filitered.info.q1)
+  })
+  
+  # returns info about nearest points when clicking on certain parts of the map
+  output$click_info <- renderPrint({
+    nearPoints(filtered.map.q1(), input$plot_click, addDist = TRUE)
+  })
+  
+  # allows the user to click and drag to grab a bunch of plotted points and 
+  # returns all the information about them
+  output$brush_info <- renderPrint({
+    brushedPoints(filtered.map.q1(), input$plot_brush)
+  })
+  
+  output$map.description <- renderText({
+    map.description <- paste0("Below shows the world map with different
+                              locations of meteorites that have landed on Earth. 
+                              The map is currently displaying the year: ", 
+                              input$chosen.year, ". Click your mouse on the
+                              plot (and wait two seconds!) to find information 
+                              including name, class, mass, if it fell, and
+                              the geolocation coordinates. You can click and 
+                              brush over several points to display more info.")
+    return(map.description)
+  })
 }
 
 shinyServer(server)
