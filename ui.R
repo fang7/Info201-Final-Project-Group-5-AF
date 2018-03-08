@@ -12,7 +12,7 @@ ui <- fluidPage(
   # What goes in our tabsets
   tabsetPanel(type = "tabs",
               tabPanel("Q1"),
-              tabPanel("Q2",
+              tabPanel("Composition vs Location",
                        sidebarLayout(
                          sidebarPanel(
                            br(),

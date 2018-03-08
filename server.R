@@ -339,24 +339,32 @@ server <- function(input, output) {
   # SUMMARY AND INTERACTIVE DATA
   # -----------------------------------------------------------------------
   output$q2.text2 <- renderText({
-    "After analyzing the graph and barplot we can conclude there is no exact trend to where the meteorites fall. There are years where
-    there are significantly more data collected in areas like Poland, Lithuania, and Saudi Arabia. But none of it is significant enough
-    information to actually determine a pattern. As far as composition goes the distribution of types that have fallen in these more 
-    common places in any given year is rather fair."
+    "After analyzing the graph and barplot we can conclude there is no exact
+    trend to where the meteorites fall. There are years where there are 
+    significantly more data collected in areas like Poland, Lithuania, and
+    Saudi Arabia. But none of it is significant enough information to actually
+    determine a pattern. As far as composition goes the distribution of types
+    that have fallen in these more common places in any given year is rather 
+    fair."
     
   })
   
   # Rendering info tree
   output$img.source <- renderText({
-    "Source: https://commons.wikimedia.org/wiki/File:Meteorite_Classification_after_Weissberg_McCoy_Krot_2006_Stony_Iron.svg"
+    "Source: https://commons.wikimedia.org/wiki/File:Meteorite_Classification
+    _after_Weissberg_McCoy_Krot_2006_Stony_Iron.svg"
   })
   
   # Description
   output$q2.text3 <- renderText({
-    " Below is a study on if certain compositions of meteorites fall more commonly in specific areas than others.
-      There is a map provided showing the heat zones for meteor strikes during the current year selected for an overall view of the data
-      we are working with. Underneath is a bargraph that breaks down the total count of meteorites per region into their classification
-      groups one color for each group present. A tree and table are provided for information on classification conventions for general curiosity."
+    " Below is a study on if certain compositions of meteorites fall more
+      commonly in specific areas than others. There is a map provided showing
+      the heat zones for meteor strikes during the current year selected for 
+      an overall view of the data we are working with. Underneath is a bargraph
+      that breaks down the total count of meteorites per region into their 
+      classification groups one color for each group present. A tree and table
+      are provided for information on classification conventions for general 
+      curiosity."
   })
   
 }
