@@ -12,7 +12,32 @@ ui <- fluidPage(
   # What goes in our tabsets
   tabsetPanel(type = "tabs",
               tabPanel("Q1"),
-              tabPanel("Q2"),
+              tabPanel("Q2",
+                       sidebarLayout(
+                         sidebarPanel(
+                           br(),
+                           sliderInput("select.year", "Year:",min = 1974, max = 2011, value = 1974),
+                           br()
+                         ),
+                         
+                         mainPanel(
+                           h2("Description"),
+                           textOutput("q2.text3"),
+                           h2("Density of Meteorite Landings on Land"),
+                           plotOutput("q2.map") , 
+                           h2("Meteorite Compositions"),
+                           plotOutput("q2.bar.graph"), 
+                           h2("Composition Information"),
+                           img(src = "classification.png"),
+                           textOutput("img.source"),
+                           br(),
+                           img(src = "table_class.png"),
+                           h2("Analysis"), 
+                           textOutput("q2.text2"),
+                           br(),
+                           br()) 
+                       )
+              ),
               # The tab panel for question 3. Includes an interactive map, 
               # an introduction to the map, an information display that 
               # displays data accordingto user's click, and an interactive 

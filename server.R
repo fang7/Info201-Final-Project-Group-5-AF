@@ -3,6 +3,8 @@ library(ggplot2)
 library(rsconnect)
 library(dplyr)
 library(maps)
+library(sp)
+library(maptools)
 library(RColorBrewer)
 
 source('spatial_utils.R')
@@ -255,6 +257,106 @@ server <- function(input, output) {
             The map can be clicked for further information about the location 
             and its population density.")
   })
+  
+  #-------------------------------------------------------------------------
+  # PART 2
+  #-------------------------------------------------------------------------
+  
+  # READING DATA IN
+  meta.data <- read.csv('data/meteorite-landings.csv')
+  
+  # FILTER RELEVANT YEARS DATA AND GETTING COUNTRY NAMES
+  meta.data <- meta.data %>%
+    filter(year >= 1974 & year <= 2011) %>%
+    na.omit() %>%
+    mutate(region = GetCountryAtPoint(reclat,reclong))
+  
+  # Density Map OVERALL COUNTS OF METEORS
+  total.counts <- reactive({
+    
+    count.region <- meta.data %>%
+      filter(year == input$select.year) %>%
+      group_by(region) %>%
+      summarize(counts = n()) %>%
+      arrange(desc(counts)) %>%
+      na.omit() 
+    
+    return(count.region)
+  })
+  
+  # Composition table for the BARPLOT
+  make.three <- reactive({
+    
+    meta.data <- meta.data %>%
+      filter(year == input$select.year) %>%
+      group_by(recclass,region) %>%
+      summarize(counts = n()) %>%
+      na.omit() %>%
+      arrange(desc(counts))
+    
+    return(meta.data)
+  })
+  
+  # DATA FOR METEORITE TYPE COUNTS BY REGION (LAND ONLY)
+  map.data <- reactive({
+    
+    # find out the region
+    world.data <- map_data("world")
+    mr.world.wide <- left_join(world.data, total.counts(), by = "region")
+    mr.world.wide$counts[is.na(mr.world.wide$counts)] <- 0
+    
+    return(mr.world.wide)
+  })
+  
+  # DENSITY PLOT ON MAP
+  # ----------------------------------------------------------------------- 
+  output$q2.map <- renderPlot({
+    
+    plot <- ggplot(data = map.data()) +
+      geom_polygon(aes(x = long, y = lat, group = group, fill = 
+                         cut(counts, breaks = c(0,1,2,5,10,Inf), labels = c("1","2-3","4-5","6-10","10+"))), 
+                   color = "black") + 
+      scale_fill_brewer(palette = "Reds") +
+      coord_quickmap()  + 
+      guides(fill=guide_legend(title="Impact Zone Frequency Levels"))
+    
+    return(plot)
+  })
+  
+  # BARPLOT BELOW MAP
+  # -----------------------------------------------------------------------
+  output$q2.bar.graph <- renderPlot({
+    plot <- ggplot(data = make.three(), aes(y = counts, x = region, fill = recclass)) + 
+      geom_bar(stat="identity") + 
+      labs(x = "Country", y = "Number of Meteors")   + 
+      guides(fill=guide_legend(title="Classification"))
+    
+    return(plot)
+  })
+  
+  # SUMMARY AND INTERACTIVE DATA
+  # -----------------------------------------------------------------------
+  output$q2.text2 <- renderText({
+    "After analyzing the graph and barplot we can conclude there is no exact trend to where the meteorites fall. There are years where
+    there are significantly more data collected in areas like Poland, Lithuania, and Saudi Arabia. But none of it is significant enough
+    information to actually determine a pattern. As far as composition goes the distribution of types that have fallen in these more 
+    common places in any given year is rather fair."
+    
+  })
+  
+  # Rendering info tree
+  output$img.source <- renderText({
+    "Source: https://commons.wikimedia.org/wiki/File:Meteorite_Classification_after_Weissberg_McCoy_Krot_2006_Stony_Iron.svg"
+  })
+  
+  # Description
+  output$q2.text3 <- renderText({
+    " Below is a study on if certain compositions of meteorites fall more commonly in specific areas than others.
+      There is a map provided showing the heat zones for meteor strikes during the current year selected for an overall view of the data
+      we are working with. Underneath is a bargraph that breaks down the total count of meteorites per region into their classification
+      groups one color for each group present. A tree and table are provided for information on classification conventions for general curiosity."
+  })
+  
 }
 
 shinyServer(server)
