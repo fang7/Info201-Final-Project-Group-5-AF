@@ -68,8 +68,18 @@ ui <- fluidPage(
               # an introduction to the map, an information display that 
               # displays data accordingto user's click, and an interactive 
               # slider
-              tabPanel("Relation between meteorite data and population density"
-                       , sidebarPanel(sliderInput("n",
+              tabPanel("Relation between meteorite data and population density", 
+                       sidebarPanel(br(),
+                                    br(),
+                                    br(),
+                                    br(),
+                                    br(),
+                                    br(),
+                                    br(),
+                                    br(),
+                                    br(),
+                                    br(),
+                                    sliderInput("n",
                                                   "Choose a year:",
                                                   value = 2000,
                                                   min = 1974,
@@ -80,13 +90,44 @@ ui <- fluidPage(
                          meteorites been found and how many people did it 
                          affect (depending on the population density of the 
                          country)?")),
-                         p("It was found that over the years, 
-                           a majority of meteorites were reported to be found 
-                           in North America and Afria and the population 
-                           density in these places have always been in the 
-                           middle range in comparison to other countries. Thus
-                           concluding that so far, meteorites haven't been 
-                           found a lot in highly populated countries."),
+                         p("This analysis question tries to understand where 
+                           the majority of the meteorites are found and using
+                           the population densities in those regions, try to 
+                           understand how many people the meteorite falls may
+                           affect. Even if there are no people or buildings 
+                           that are directly hit by a meteorite, the shockwave
+                           from the exploding object injures people and causes
+                           a lot of damage to infrastructures. "),
+                         br(),
+                         p("When looking at the data found, it was noticed that
+                           most of the meteorite falls have been recorded in 
+                           North America, North Africa and Antarctica whose 
+                           population densities are moderate, moderate, and 
+                           almost negligible respectively. Thus, it was 
+                           concluded that a majority of the meteorite falls
+                           weren't recorded in densely populated countries."),
+                         br(),
+                         p("This analysis question also sparked another 
+                           question. Why are most number of meteorites 
+                           found in the above-mentioned countries?"),
+                         br(),
+                         p("The reason is because the Africa and Antarctica 
+                            have a large span of deserts and deserts are places 
+                            that collect meteorites over thousands of years 
+                            without anything happening to them. Also, 
+                            meteorites are easier to find in deserts then in 
+                            places with lots of vegetation or other rocks. 
+                            
+                            Another reason why more meteorites are found in 
+                            deserts is because they are collected irrespective
+                            of their size, whereas in other places it is easier
+                            to miss the smaller meteorites. If instead of 
+                            looking at the amount of meteorites that fell in a 
+                            place by number, we looked at the amount that fell 
+                            by mass, we would actually find that more 
+                            meteorites by mass have been found in places like 
+                            North America.
+                            "),
                          plotOutput("map3", click = "plot_click"),
                          verbatimTextOutput("info3")  
                        )
